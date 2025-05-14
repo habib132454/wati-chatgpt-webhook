@@ -1,9 +1,9 @@
 {
   "name": "wati-chatgpt-webhook",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "webhook.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node webhook.js"
   },
   "dependencies": {
     "axios": "^1.6.0",
