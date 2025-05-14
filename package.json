@@ -1,6 +1,6 @@
 {
   "name": "wati-chatgpt-webhook",
-  "version": "2.0.3",
+  "version": "2.0.1",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
