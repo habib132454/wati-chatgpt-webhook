@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const app = express();
+
 app.use(express.json());
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -11,7 +12,7 @@ app.post("/api/webhook", async (req, res) => {
     const userMessage = req.body.message || req.body.text || "";
     const phoneNumber = req.body.waId || req.body.phone;
 
-    console.log("📩 요청 본문:", req.body);
+    console.log("📥 요청 본문:", req.body);
     console.log("📞 사용자 번호:", phoneNumber);
     console.log("💬 사용자 메시지:", userMessage);
 
@@ -22,7 +23,8 @@ app.post("/api/webhook", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "너는 얄라코리아 상담 매니저야. 손님이 한국 여행이나 병원, 피부과에 대해 묻는다면 정중하고 따뜻하게 아랍어로 응답해줘.",
+            content:
+              "너는 얄라코리아 상담 매니저야. 손님이 한국 여행이나 병원, 피부과에 대해 묻는다면 정중하고 따뜻하게 아랍어로 응답해줘.",
           },
           {
             role: "user",
@@ -40,29 +42,13 @@ app.post("/api/webhook", async (req, res) => {
     );
 
     const reply = response.data.choices[0].message.content;
-    console.log("ChatGPT 응답:", reply);
+    console.log("✅ ChatGPT 응답:", reply);
 
-    await axios.post(
-      "https://live-server.wati.io/api/v1/sendSessionMessage",
-      {
-        phone: phoneNumber,
-        messageText: reply,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${WATI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    res.status(200).send("Message sent.");
+    res.status(200).json({ reply });
   } catch (error) {
-    console.error("오류 발생:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("❌ 오류 발생:", error.message);
+    res.status(500).send("서버 오류 발생");
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
+module.exports = app;
