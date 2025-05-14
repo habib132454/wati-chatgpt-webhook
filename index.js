@@ -9,9 +9,8 @@ const WATI_API_KEY = process.env.WATI_API_KEY;
 app.post("/", async (req, res) => {
   try {
     const userMessage = req.body.message || req.body.text || "";
-    const phoneNumber = req.body.waId || req.body.phone; // WhatsApp 사용자 번호
+    const phoneNumber = req.body.waId || req.body.phone;
 
-    // 1. ChatGPT 응답 생성
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -40,7 +39,6 @@ app.post("/", async (req, res) => {
     const reply = response.data.choices[0].message.content;
     console.log("ChatGPT 응답:", reply);
 
-    // 2. WATI API로 응답 전송
     if (phoneNumber && reply) {
       await axios.post(
         "https://live-server.wati.io/api/v1/sendSessionMessage",
